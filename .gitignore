@@ -1,0 +1,7 @@
+# macOS
+.DS_Store
+
+# dependencies
+.venv/
+__pycache__/
+
