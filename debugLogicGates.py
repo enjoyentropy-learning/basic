@@ -199,6 +199,7 @@ def custom_gradient_update(model, loss):
                 grad_norm_sq += torch.sum(p.grad ** 2)
 
         if grad_norm_sq < 1e-12:
+            print("Gradient vanished — stopping.")
             return
 
         step_scale = loss / grad_norm_sq
@@ -210,3 +211,56 @@ def custom_gradient_update(model, loss):
 
 dtype_float32 = torch.float
 dtype_float64 = torch.float64
+
+
+def analyze_convergence(loss_history, threshold=0.0001):
+    """Analyzes loss history for convergence and post-convergence increases.
+
+    Args:
+        loss_history: List or array of loss values per epoch.
+        threshold: Loss value considered as converged.
+    """
+    import numpy as np
+
+    losses = np.array(loss_history)
+
+    below_idx = np.where(losses <= threshold)[0]
+
+    if len(below_idx) == 0:
+        print("Loss never reached threshold.")
+    else:
+        start = below_idx[0]
+        increases = np.where(losses[start+1:] > losses[start:-1])[0]
+
+        if len(increases) == 0:
+            print("No loss increases after convergence.")
+        else:
+            print(f"Loss increased {len(increases)} times after reaching {threshold}.")
+            for i in increases[:10]:
+                e = start + i + 1
+                print(
+                    f"Epoch {e}: "
+                    f"{losses[e-1]:.6f} → {losses[e]:.6f}"
+                )
+        print(f"Loss at last {losses[-1]:.12f}")
+
+
+def print_learned_parameters(model):
+    """Prints all learned parameters of the model and derived coefficients."""
+    print('Learned Parameters:')
+    for name, param in model.named_parameters():
+        print(f'Parameter: {name}, Value: {param.data}')
+
+    wq = model.raw_attention.Wq.weight.item()
+    wk = model.raw_attention.Wk.weight.item()
+    wv = model.raw_attention.Wv.weight.item()
+    w_attn_out1 = model.attn_out.weight[0, 0].item()
+    w_attn_out2 = model.attn_out.weight[0, 1].item()
+    b_attn_out = model.attn_out.bias[0].item()
+    C = wq * wk * wv
+
+    coeff_x1_term = w_attn_out1 * (C + 1)
+    coeff_x2_term = w_attn_out2 * (C + 1)
+    coeff_x1x2_term = C * (w_attn_out1 + w_attn_out2)
+    print(coeff_x1_term, coeff_x2_term, coeff_x1x2_term, b_attn_out)
+    print(f"{coeff_x1_term:.4f}, {coeff_x2_term:.4f}, {coeff_x1x2_term:.4f}, {b_attn_out:.4f}")
