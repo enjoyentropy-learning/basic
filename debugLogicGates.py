@@ -193,13 +193,21 @@ def evaluate_model(model, loss_fn, X, y, gate_name=""):
 def custom_gradient_update(model, loss):
     """Applies custom gradient update: p -= (loss / ||grad||^2) * grad"""
     with torch.no_grad():
+        eps = torch.finfo(loss.dtype).eps
+        threshold = eps ** 2
+
         grad_norm_sq = 0.0
         for p in model.parameters():
             if p.grad is not None:
                 grad_norm_sq += torch.sum(p.grad ** 2)
 
-        if grad_norm_sq < 1e-12:
-            print("Gradient vanished — stopping.")
+        if grad_norm_sq < threshold:
+            print(
+                f"Gradient vanished | "
+                f"grad_norm_sq={grad_norm_sq.item():.3e}, "
+                f"threshold={threshold:.3e}, "
+                f"dtype={loss.dtype}"
+            )
             return
 
         step_scale = loss / grad_norm_sq
@@ -242,7 +250,7 @@ def analyze_convergence(loss_history, threshold=0.0001):
                     f"Epoch {e}: "
                     f"{losses[e-1]:.6f} → {losses[e]:.6f}"
                 )
-        print(f"Loss at last {losses[-1]:.12f}")
+        print(f"Loss at last {losses[-1]:.12f} {losses[-1]:.6e}")
 
 
 def print_learned_parameters(model):
