@@ -334,102 +334,102 @@ dtype_float32 = torch.float
 dtype_float64 = torch.float64
 
 
-print("--- Training with AdamW Optimizer (float32) ---")
-torch.set_default_dtype(dtype_float32) # Set default dtype for this block
-# 3. Generate training and validation data for AdamW
-X_train_oh_adamw, y_train_adamw, X_val_oh_adamw, y_val_adamw, X_train_original_adamw, X_val_original_adamw = generate_data(num_symbols=9, train_frac=0.003, seed=42, dtype=dtype_float32)
+##print("--- Training with AdamW Optimizer (float32) ---")
+# # torch.set_default_dtype(dtype_float32) # Set default dtype for this block
+# # # 3. Generate training and validation data for AdamW
+# # X_train_oh_adamw, y_train_adamw, X_val_oh_adamw, y_val_adamw, X_train_original_adamw, X_val_original_adamw = generate_data(num_symbols=9, train_frac=0.003, seed=42, dtype=dtype_float32)
 
-# 4. Initialize a new model and loss function
-model_adamw, loss_fn_adamw = initialize_model_and_loss(d_model, seq_len, dtype=dtype_float32)
+# # # 4. Initialize a new model and loss function
+# # model_adamw, loss_fn_adamw = initialize_model_and_loss(d_model, seq_len, dtype=dtype_float32)
 
-# 5. Initialize an AdamW optimizer
-optimizer_adamw = optim.AdamW(model_adamw.parameters(), lr=0.03)
+# # 5. Initialize an AdamW optimizer
+# optimizer_adamw = optim.AdamW(model_adamw.parameters(), lr=0.03)
 
-# 6. Train the model using train_model with AdamW optimizer
-adamw_loss_history = train_model(model_adamw, optimizer_adamw, loss_fn_adamw, X_train_oh_adamw, y_train_adamw,
-                                 epochs=500, log_interval=100, optimizer_type='adamw')
+# # 6. Train the model using train_model with AdamW optimizer
+# adamw_loss_history = train_model(model_adamw, optimizer_adamw, loss_fn_adamw, X_train_oh_adamw, y_train_adamw,
+#                                  epochs=500, log_interval=100, optimizer_type='adamw')
 
-# 7. Evaluate the AdamW-trained model on the validation set
-print("\n--- Evaluation for AdamW Model (float32) ---")
-evaluate_model(model_adamw, loss_fn_adamw, X_val_oh_adamw, y_val_adamw, X_val_original_adamw, data_name="Validation (AdamW, float32)")
-
-
-print("\n--- Training with LBFGS Optimizer (float64) ---")
-torch.set_default_dtype(dtype_float64) # Set default dtype for this block
-# 8. Generate new training and validation data for LBFGS
-X_train_oh_lbfgs, y_train_lbfgs, X_val_oh_lbfgs, y_val_lbfgs, X_train_original_lbfgs, X_val_original_lbfgs = generate_data(num_symbols=9, train_frac=0.003, seed=43, dtype=dtype_float64)
-
-# 9. Initialize another new model and loss function
-model_lbfgs, loss_fn_lbfgs = initialize_model_and_loss(d_model, seq_len, dtype=dtype_float64)
-
-# 10. Initialize an LBFGS optimizer
-optimizer_lbfgs = torch.optim.LBFGS(model_lbfgs.parameters(), lr=1.0, max_iter=20, history_size=100, line_search_fn="strong_wolfe")
-
-# 11. Train the model using train_model with LBFGS optimizer
-lbfgs_loss_history = train_model(model_lbfgs, optimizer_lbfgs, loss_fn_lbfgs, X_train_oh_lbfgs, y_train_lbfgs,
-                                 epochs=400, optimizer_type='lbfgs', log_interval=100) # LBFGS steps are not epochs, usually fewer steps
-
-# 12. Evaluate the LBFGS-trained model on the validation set
-print("\n--- Evaluation for LBFGS Model (float64) ---")
-evaluate_model(model_lbfgs, loss_fn_lbfgs, X_val_oh_lbfgs, y_val_lbfgs, X_val_original_lbfgs, data_name="Validation (LBFGS, float64)")
+# # 7. Evaluate the AdamW-trained model on the validation set
+# print("\n--- Evaluation for AdamW Model (float32) ---")
+# evaluate_model(model_adamw, loss_fn_adamw, X_val_oh_adamw, y_val_adamw, X_val_original_adamw, data_name="Validation (AdamW, float32)")
 
 
-print("\n--- Training with Custom Optimizer (Gradient Normalization, float32) ---")
-torch.set_default_dtype(dtype_float32) # Set default dtype for this block
-# 13. Generate new training and validation data for Custom Optimizer
-X_train_oh_custom, y_train_custom, X_val_oh_custom, y_val_custom, X_train_original_custom, X_val_original_custom = generate_data(num_symbols=9, train_frac=0.003, seed=44, dtype=dtype_float32)
+# print("\n--- Training with LBFGS Optimizer (float64) ---")
+# torch.set_default_dtype(dtype_float64) # Set default dtype for this block
+# # 8. Generate new training and validation data for LBFGS
+# X_train_oh_lbfgs, y_train_lbfgs, X_val_oh_lbfgs, y_val_lbfgs, X_train_original_lbfgs, X_val_original_lbfgs = generate_data(num_symbols=9, train_frac=0.003, seed=43, dtype=dtype_float64)
 
-# 14. Initialize yet another new model and loss function
-model_custom, loss_fn_custom = initialize_model_and_loss(d_model, seq_len, dtype=dtype_float32)
+# # 9. Initialize another new model and loss function
+# model_lbfgs, loss_fn_lbfgs = initialize_model_and_loss(d_model, seq_len, dtype=dtype_float64)
 
-# 15. Train the model using train_model with custom update rule
-custom_loss_history = train_model(model_custom, None, loss_fn_custom, X_train_oh_custom, y_train_custom,
-                                  epochs=500, optimizer_type='custom', custom_update_fn=custom_gradient_update, log_interval=100)
+# # 10. Initialize an LBFGS optimizer
+# optimizer_lbfgs = torch.optim.LBFGS(model_lbfgs.parameters(), lr=1.0, max_iter=20, history_size=100, line_search_fn="strong_wolfe")
 
-# 16. Evaluate the custom-optimizer-trained model on the validation set
-print("\n--- Evaluation for Custom Optimizer Model (float32) ---")
-evaluate_model(model_custom, loss_fn_custom, X_val_oh_custom, y_val_custom, X_val_original_custom, data_name="Validation (Custom, float32)")
+# # 11. Train the model using train_model with LBFGS optimizer
+# lbfgs_loss_history = train_model(model_lbfgs, optimizer_lbfgs, loss_fn_lbfgs, X_train_oh_lbfgs, y_train_lbfgs,
+#                                  epochs=400, optimizer_type='lbfgs', log_interval=100) # LBFGS steps are not epochs, usually fewer steps
 
-
-
-print("\n--- Training with Different Data Parameters (AdamW, 5 symbols, float32) ---")
-torch.set_default_dtype(dtype_float32) # Set default dtype for this block
-d_model_small = 5
-seq_len_small = 5
-X_train_oh_small, y_train_small, X_val_oh_small, y_val_small, X_train_original_small, X_val_original_small = generate_data(num_symbols=d_model_small, train_frac=0.1, seed=45, dtype=dtype_float32)
-model_small, loss_fn_small = initialize_model_and_loss(d_model_small, seq_len_small, dtype=dtype_float32)
-optimizer_small = optim.AdamW(model_small.parameters(), lr=0.01)
-small_data_loss_history = train_model(model_small, optimizer_small, loss_fn_small, X_train_oh_small, y_train_small,
-                                      epochs=300, log_interval=50, optimizer_type='adamw')
-evaluate_model(model_small, loss_fn_small, X_val_oh_small, y_val_small, X_val_original_small, data_name="Validation (Small Data, float32)")
+# # 12. Evaluate the LBFGS-trained model on the validation set
+# print("\n--- Evaluation for LBFGS Model (float64) ---")
+# evaluate_model(model_lbfgs, loss_fn_lbfgs, X_val_oh_lbfgs, y_val_lbfgs, X_val_original_lbfgs, data_name="Validation (LBFGS, float64)")
 
 
-# --- Visualize Training History ---
-plt.figure(figsize=(12, 8))
-plt.plot(adamw_loss_history, label='AdamW Loss (float32)', alpha=0.7)
-plt.plot(lbfgs_loss_history, label='LBFGS Loss (float64)', alpha=0.7)
-plt.plot(custom_loss_history, label='Custom Update Loss (float32)', alpha=0.7)
-plt.plot(small_data_loss_history, label='AdamW (5 Symbols, float32) Loss', alpha=0.7, linestyle='--')
-plt.xlabel('Epoch/Step')
-plt.ylabel('Loss')
-plt.title('Training Loss History for Different Optimizers and Data Parameters')
-plt.legend()
-plt.grid(True)
-plt.yscale('log') # Use log scale for better visualization of different convergence speeds
-plt.show()
+# print("\n--- Training with Custom Optimizer (Gradient Normalization, float32) ---")
+# torch.set_default_dtype(dtype_float32) # Set default dtype for this block
+# # 13. Generate new training and validation data for Custom Optimizer
+# X_train_oh_custom, y_train_custom, X_val_oh_custom, y_val_custom, X_train_original_custom, X_val_original_custom = generate_data(num_symbols=9, train_frac=0.003, seed=44, dtype=dtype_float32)
 
-# --- Final Task: Summary ---
-print("\n--- Summary of Organized Code Structure ---")
-print("The code has been refactored into modular functions:")
-print("1. `generate_data`: Centralized function to create training and validation datasets, ensuring reproducibility and easy modification of data parameters (e.g., number of symbols, train/validation split ratio).")
-print("2. `initialize_model_and_loss`: A function to instantiate the `RawAttentionWithTopNeuron` model and the `MSELoss` function, making it easy to configure model size or loss types.")
-print("3. `train_model`: A flexible training loop that accommodates different optimizers (AdamW, LBFGS, custom update rules) by handling their specific `step` mechanisms (e.g., LBFGS's `closure`). This allows for straightforward experimentation with various optimization algorithms.")
-print("4. `evaluate_model`: A dedicated function to assess model performance on given data, calculating loss and accuracy, and providing insights into misclassified examples. This standardizes the evaluation process.")
+# # 14. Initialize yet another new model and loss function
+# model_custom, loss_fn_custom = initialize_model_and_loss(d_model, seq_len, dtype=dtype_float32)
 
-print("\n**How this structure facilitates experimentation:**")
-print("- **Different Optimizers**: By passing different optimizer instances (e.g., `optim.AdamW`, `torch.optim.LBFGS`) and specifying `optimizer_type`, the same `train_model` function can be used without code duplication, as demonstrated above.")
-print("- **Different Input Data Parameters**: The `generate_data` function allows easy generation of datasets with varying `num_symbols` or `train_frac`. This means one can quickly test the model's performance on different problem complexities or dataset sizes, as shown with the 5-symbol example.")
-print("- **Configurable Data Types**: The added `dtype` parameter to `generate_data` and `initialize_model_and_loss` functions allows for easy experimentation with different floating-point precision (e.g., `torch.float32` vs `torch.float64`) for both data and model parameters, enabling analysis of its impact on training stability and performance.")
-print("- **Clearer Workflow**: The modularity makes the entire machine learning pipeline (data -> model -> train -> evaluate) much clearer, easier to understand, debug, and extend.")
-print("- **Reproducibility**: Explicit seeding and function encapsulation promote reproducibility of experiments.")
+# # 15. Train the model using train_model with custom update rule
+# custom_loss_history = train_model(model_custom, None, loss_fn_custom, X_train_oh_custom, y_train_custom,
+#                                   epochs=500, optimizer_type='custom', custom_update_fn=custom_gradient_update, log_interval=100)
+
+# # 16. Evaluate the custom-optimizer-trained model on the validation set
+# print("\n--- Evaluation for Custom Optimizer Model (float32) ---")
+# evaluate_model(model_custom, loss_fn_custom, X_val_oh_custom, y_val_custom, X_val_original_custom, data_name="Validation (Custom, float32)")
+
+
+
+# print("\n--- Training with Different Data Parameters (AdamW, 5 symbols, float32) ---")
+# torch.set_default_dtype(dtype_float32) # Set default dtype for this block
+# d_model_small = 5
+# seq_len_small = 5
+# X_train_oh_small, y_train_small, X_val_oh_small, y_val_small, X_train_original_small, X_val_original_small = generate_data(num_symbols=d_model_small, train_frac=0.1, seed=45, dtype=dtype_float32)
+# model_small, loss_fn_small = initialize_model_and_loss(d_model_small, seq_len_small, dtype=dtype_float32)
+# optimizer_small = optim.AdamW(model_small.parameters(), lr=0.01)
+# small_data_loss_history = train_model(model_small, optimizer_small, loss_fn_small, X_train_oh_small, y_train_small,
+#                                       epochs=300, log_interval=50, optimizer_type='adamw')
+# evaluate_model(model_small, loss_fn_small, X_val_oh_small, y_val_small, X_val_original_small, data_name="Validation (Small Data, float32)")
+
+
+# # --- Visualize Training History ---
+# plt.figure(figsize=(12, 8))
+# plt.plot(adamw_loss_history, label='AdamW Loss (float32)', alpha=0.7)
+# plt.plot(lbfgs_loss_history, label='LBFGS Loss (float64)', alpha=0.7)
+# plt.plot(custom_loss_history, label='Custom Update Loss (float32)', alpha=0.7)
+# plt.plot(small_data_loss_history, label='AdamW (5 Symbols, float32) Loss', alpha=0.7, linestyle='--')
+# plt.xlabel('Epoch/Step')
+# plt.ylabel('Loss')
+# plt.title('Training Loss History for Different Optimizers and Data Parameters')
+# plt.legend()
+# plt.grid(True)
+# plt.yscale('log') # Use log scale for better visualization of different convergence speeds
+# plt.show()
+
+# # --- Final Task: Summary ---
+# print("\n--- Summary of Organized Code Structure ---")
+# print("The code has been refactored into modular functions:")
+# print("1. `generate_data`: Centralized function to create training and validation datasets, ensuring reproducibility and easy modification of data parameters (e.g., number of symbols, train/validation split ratio).")
+# print("2. `initialize_model_and_loss`: A function to instantiate the `RawAttentionWithTopNeuron` model and the `MSELoss` function, making it easy to configure model size or loss types.")
+# print("3. `train_model`: A flexible training loop that accommodates different optimizers (AdamW, LBFGS, custom update rules) by handling their specific `step` mechanisms (e.g., LBFGS's `closure`). This allows for straightforward experimentation with various optimization algorithms.")
+# print("4. `evaluate_model`: A dedicated function to assess model performance on given data, calculating loss and accuracy, and providing insights into misclassified examples. This standardizes the evaluation process.")
+
+# print("\n**How this structure facilitates experimentation:**")
+# print("- **Different Optimizers**: By passing different optimizer instances (e.g., `optim.AdamW`, `torch.optim.LBFGS`) and specifying `optimizer_type`, the same `train_model` function can be used without code duplication, as demonstrated above.")
+# print("- **Different Input Data Parameters**: The `generate_data` function allows easy generation of datasets with varying `num_symbols` or `train_frac`. This means one can quickly test the model's performance on different problem complexities or dataset sizes, as shown with the 5-symbol example.")
+# print("- **Configurable Data Types**: The added `dtype` parameter to `generate_data` and `initialize_model_and_loss` functions allows for easy experimentation with different floating-point precision (e.g., `torch.float32` vs `torch.float64`) for both data and model parameters, enabling analysis of its impact on training stability and performance.")
+# print("- **Clearer Workflow**: The modularity makes the entire machine learning pipeline (data -> model -> train -> evaluate) much clearer, easier to understand, debug, and extend.")
+# print("- **Reproducibility**: Explicit seeding and function encapsulation promote reproducibility of experiments.")
 
