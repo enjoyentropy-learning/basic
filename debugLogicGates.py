@@ -188,6 +188,8 @@ def evaluate_model(model, loss_fn, X, y, gate_name=""):
     return loss.item()
 
 
+# Apply newton method on the loss function itself as we know Loss should be zero
+# multiply and divide as we can't divide by gradient which is vector
 def custom_gradient_update(model, loss):
     """Applies custom gradient update: p -= (loss / ||grad||^2) * grad"""
     with torch.no_grad():
