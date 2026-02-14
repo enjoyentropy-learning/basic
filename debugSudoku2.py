@@ -83,60 +83,109 @@ def generate_data(num_symbols=9, train_frac=0.003, seed=0, dtype=torch.float):
 
 
 
-# 1. Define the RawAttention class
-class RawAttention(nn.Module):
+class MultiplyBlock(nn.Module):
     def __init__(self, d_model, dtype=torch.float):
         super().__init__()
-        self.d_model = d_model
         self.Wq = nn.Linear(d_model, d_model, bias=False, dtype=dtype)
         self.Wk = nn.Linear(d_model, d_model, bias=False, dtype=dtype)
         self.Wv = nn.Linear(d_model, d_model, bias=False, dtype=dtype)
 
     def forward(self, x):
+        # x: (batch, seq_len, d_model)
+
         Q = self.Wq(x)
         K = self.Wk(x)
         V = self.Wv(x)
-        scores = torch.matmul(Q, K.transpose(1, 2)) / (self.d_model ** 0.5)
-        out = torch.matmul(scores, V)
+
+        scores = torch.matmul(Q, K.transpose(1, 2))  # (batch, seq_len, seq_len)
+        out = torch.matmul(scores, V)                # (batch, seq_len, d_model)
+
         return out
-
-# 2. Define the RawAttentionWithTopNeuron class
-class RawAttentionWithTopNeuron(nn.Module):
-    def __init__(self, d_model, seq_len, dtype=torch.float):
+    
+class PolynomialAttentionNet(nn.Module):
+    def __init__(self, input_dim, d_model, depth, dtype=torch.float):
         super().__init__()
-        #self.raw_attention = RawAttention(d_model, dtype=dtype)
-        intout=5 #10
-        #self.readout = nn.Linear(d_model * seq_len, intout, bias=True, dtype=dtype)
-        #self.readout = nn.Linear(d_model, intout, bias=True, dtype=dtype)
-        #self.readout2 = nn.Linear(intout, 1, bias=True, dtype=dtype)
-        # The below sequential gives 100% accuracy. 
-        # Before the model was not complex enough to determine the logic
-        self.net = nn.Sequential(
-            nn.Linear(9, 32),
-            nn.ReLU(),
-            nn.Linear(32, 16),
-            nn.ReLU(),
-            nn.Linear(16, 1)
-        )
 
-        self.seq_len = seq_len
+        # Per-token linear embedding
+        self.embed = nn.Linear(input_dim, d_model, bias=True, dtype=dtype)
+
+        # Polynomial expansion layers
+        self.layers = nn.ModuleList([
+            MultiplyBlock(d_model, dtype=dtype)
+            for _ in range(depth)
+        ])
+
+        # Final aggregation
+        self.output = nn.Linear(d_model, 1, bias=True, dtype=dtype)
 
     def forward(self, x):
-        # attended = self.raw_attention(x)
-        #combined = attended + x  # Residual connection
-        #out1 = self.readout(combined.reshape(combined.shape[0], -1))
-        #print(x)
-        combined = x.sum(dim=1)
-        #print(combined)
-        #out1 = self.readout(combined)
-        #out = self.readout2(out1)
-        out = self.net(combined)
-        return out
+        # x: (batch, seq_len, input_dim)
+
+        h = self.embed(x)   # (batch, seq_len, d_model)
+
+        for layer in self.layers:
+            h = h + 0.1 * layer(h)   # scaled residual for stability
+
+        # Aggregate across tokens
+        h = h.sum(dim=1)   # (batch, d_model)
+
+        return self.output(h)
+
+
+class PLTBlock(nn.Module):
+    """
+    Polynomial Logic Transformer Block
+    Uses raw multiplication for logic gates. No ReLU, no Softmax.
+    """
+    def __init__(self, d_model):
+        super().__init__()
+        self.Wq = nn.Linear(d_model, d_model, bias=False)
+        self.Wk = nn.Linear(d_model, d_model, bias=False)
+        self.Wv = nn.Linear(d_model, d_model, bias=False)
+        
+        # The FFN here is just a Linear projection to 
+        # redistribute the 'logic signals' without squashing.
+        self.proj = nn.Linear(d_model, d_model, bias=True)
+
+    def forward(self, x):
+        # 1. Generate Product Terms (AND gates)
+        # (batch, seq, d_model) @ (batch, d_model, seq) -> (batch, seq, seq)
+        attn = torch.matmul(self.Wq(x), self.Wk(x).transpose(-1, -2))
+        
+        # 2. Aggregate Product Terms (XOR/Summation gates)
+        # (batch, seq, seq) @ (batch, seq, d_model) -> (batch, seq, d_model)
+        z = torch.matmul(attn, self.Wv(x))
+        
+        # 3. Residual connection allows lower-degree polynomials 
+        # to pass through to the next layer.
+        return self.proj(z) + x
+
+class SymbolicLogicEngine(nn.Module):
+    def __init__(self, vocab_size, n_layers=3):
+        super().__init__()
+        self.d_model = vocab_size
+        self.layers = nn.ModuleList([PLTBlock(self.d_model) for _ in range(n_layers)])
+        
+        # Final Readout: A single polynomial sum to determine the truth value
+        self.readout = nn.Linear(self.d_model, 1)
+
+    def forward(self, x):
+        # x is one-hot: (batch, seq_len, vocab_size)
+        for layer in self.layers:
+            x = layer(x)
+            
+        # For sequence-level logic (like uniqueness), we sum across positions
+        # This is equivalent to an 'OR' gate across the whole sequence.
+        logical_sum = x.mean(dim=1)
+        return self.readout(logical_sum)
+
 
 # 3. Create a function named initialize_model_and_loss
-def initialize_model_and_loss(d_model, seq_len, dtype=torch.float):
+def initialize_model_and_loss(num_symbols, d_model, depth,  dtype=torch.float):
+
     """Initializes the model and loss function."""
-    model = RawAttentionWithTopNeuron(d_model, seq_len, dtype=dtype)
+    #model = PolynomialAttentionNet(num_symbols, d_model, depth, dtype)
+    model = SymbolicLogicEngine(d_model, depth)
     loss_fn = nn.MSELoss()
     return model, loss_fn
 
@@ -373,8 +422,10 @@ def custom_gradient_update(model, loss):
                 p -= step_scale * p.grad
 
 # 2. Initialize d_model and seq_len
-d_model = 9
+num_symbols = 9
+d_model = 32
 seq_len = 9
+depth = 2
 
 # Define the dtypes to experiment with
 dtype_float32 = torch.float
