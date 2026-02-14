@@ -137,15 +137,15 @@ class PLTBlock(nn.Module):
     Polynomial Logic Transformer Block
     Uses raw multiplication for logic gates. No ReLU, no Softmax.
     """
-    def __init__(self, d_model):
+    def __init__(self, d_model,  dtype=torch.float):
         super().__init__()
-        self.Wq = nn.Linear(d_model, d_model, bias=False)
-        self.Wk = nn.Linear(d_model, d_model, bias=False)
-        self.Wv = nn.Linear(d_model, d_model, bias=False)
+        self.Wq = nn.Linear(d_model, d_model, bias=False, dtype=dtype)
+        self.Wk = nn.Linear(d_model, d_model, bias=False, dtype=dtype)
+        self.Wv = nn.Linear(d_model, d_model, bias=False, dtype=dtype)
         
         # The FFN here is just a Linear projection to 
         # redistribute the 'logic signals' without squashing.
-        self.proj = nn.Linear(d_model, d_model, bias=True)
+        self.proj = nn.Linear(d_model, d_model, bias=True, dtype=dtype)
 
     def forward(self, x):
         # 1. Generate Product Terms (AND gates)
@@ -161,13 +161,13 @@ class PLTBlock(nn.Module):
         return self.proj(z) + x
 
 class SymbolicLogicEngine(nn.Module):
-    def __init__(self, vocab_size, n_layers=3):
+    def __init__(self, vocab_size, n_layers=3,  dtype=torch.float):
         super().__init__()
         self.d_model = vocab_size
-        self.layers = nn.ModuleList([PLTBlock(self.d_model) for _ in range(n_layers)])
+        self.layers = nn.ModuleList([PLTBlock(self.d_model, dtype=dtype) for _ in range(n_layers)])
         
         # Final Readout: A single polynomial sum to determine the truth value
-        self.readout = nn.Linear(self.d_model, 1)
+        self.readout = nn.Linear(self.d_model, 1, dtype=dtype)
 
     def forward(self, x):
         # x is one-hot: (batch, seq_len, vocab_size)
@@ -176,7 +176,7 @@ class SymbolicLogicEngine(nn.Module):
             
         # For sequence-level logic (like uniqueness), we sum across positions
         # This is equivalent to an 'OR' gate across the whole sequence.
-        logical_sum = x.mean(dim=1)
+        logical_sum = x.mean(dim=1)   # (batch, vocab_size) the output shape
         return self.readout(logical_sum)
 
 
@@ -185,7 +185,7 @@ def initialize_model_and_loss(num_symbols, d_model, depth,  dtype=torch.float):
 
     """Initializes the model and loss function."""
     #model = PolynomialAttentionNet(num_symbols, d_model, depth, dtype)
-    model = SymbolicLogicEngine(d_model, depth)
+    model = SymbolicLogicEngine(d_model, depth, dtype)
     loss_fn = nn.MSELoss()
     return model, loss_fn
 
