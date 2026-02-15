@@ -139,11 +139,12 @@ class PLTBlock(nn.Module):
     """
     def __init__(self, d_model,  dtype=torch.float):
         super().__init__()
+        self.scale = d_model ** 0.5
         self.Wq = nn.Linear(d_model, d_model, bias=False, dtype=dtype)
         self.Wk = nn.Linear(d_model, d_model, bias=False, dtype=dtype)
         self.Wv = nn.Linear(d_model, d_model, bias=False, dtype=dtype)
-        
-        # The FFN here is just a Linear projection to 
+
+        # The FFN here is just a Linear projection to
         # redistribute the 'logic signals' without squashing.
         self.proj = nn.Linear(d_model, d_model, bias=True, dtype=dtype)
 
@@ -151,33 +152,47 @@ class PLTBlock(nn.Module):
         # 1. Generate Product Terms (AND gates)
         # (batch, seq, d_model) @ (batch, d_model, seq) -> (batch, seq, seq)
         attn = torch.matmul(self.Wq(x), self.Wk(x).transpose(-1, -2))
-        
+        attn = attn / self.scale  # prevent magnitude explosion through layers
+
         # 2. Aggregate Product Terms (XOR/Summation gates)
         # (batch, seq, seq) @ (batch, seq, d_model) -> (batch, seq, d_model)
         z = torch.matmul(attn, self.Wv(x))
-        
-        # 3. Residual connection allows lower-degree polynomials 
+
+        # 3. Residual connection allows lower-degree polynomials
         # to pass through to the next layer.
         return self.proj(z) + x
 
 class SymbolicLogicEngine(nn.Module):
-    def __init__(self, vocab_size, n_layers=3,  dtype=torch.float):
+    def __init__(self, vocab_size, seq_len=None, d_model=None, n_layers=3,  dtype=torch.float):
         super().__init__()
-        self.d_model = vocab_size
+        self.vocab_size = vocab_size
+        self.d_model = d_model if d_model is not None else vocab_size
+        self.seq_len = seq_len if seq_len is not None else vocab_size
+
+        # Embedding: project one-hot vocab_size into d_model
+        if self.d_model != vocab_size:
+            self.embed = nn.Linear(vocab_size, self.d_model, bias=False, dtype=dtype)
+        else:
+            self.embed = None
+
         self.layers = nn.ModuleList([PLTBlock(self.d_model, dtype=dtype) for _ in range(n_layers)])
-        
-        # Final Readout: A single polynomial sum to determine the truth value
-        self.readout = nn.Linear(self.d_model, 1, dtype=dtype)
+
+        # Flatten all position-symbol information for the readout.
+        # This preserves positional structure (unlike mean pooling),
+        # enabling the model to learn functions like det(X)^2.
+        self.readout = nn.Linear(self.d_model * self.seq_len, 1, dtype=dtype)
 
     def forward(self, x):
         # x is one-hot: (batch, seq_len, vocab_size)
+        if self.embed is not None:
+            x = self.embed(x)  # (batch, seq_len, d_model)
+
         for layer in self.layers:
             x = layer(x)
-            
-        # For sequence-level logic (like uniqueness), we sum across positions
-        # This is equivalent to an 'OR' gate across the whole sequence.
-        logical_sum = x.mean(dim=1)   # (batch, vocab_size) the output shape
-        return self.readout(logical_sum)
+
+        # Flatten to preserve all position-symbol information
+        x = x.flatten(start_dim=1)  # (batch, seq_len * d_model)
+        return self.readout(x)
 
 
 # 3. Create a function named initialize_model_and_loss

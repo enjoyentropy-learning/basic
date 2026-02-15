@@ -1,0 +1,114 @@
+======================================================================
+SymbolicLogicEngine — Embedding + Flatten Pooling + Attention Scaling
+  d_model=32, depth=3, dtype=torch.float64
+  train_frac=0.014, seed=42
+======================================================================
+Train OH: torch.Size([10160, 9, 9]) Train y: torch.Size([10160, 1])
+Val OH:   torch.Size([715600, 9, 9]) Val y: torch.Size([715600, 1])
+
+Dataset sizes: train=10160, val=715600
+Train label distribution: valid=5031, invalid=5129
+
+Model parameter count: 12961
+Model architecture:
+SymbolicLogicEngine(
+  (embed): Linear(in_features=9, out_features=32, bias=False)
+  (layers): ModuleList(
+    (0-2): 3 x PLTBlock(
+      (Wq): Linear(in_features=32, out_features=32, bias=False)
+      (Wk): Linear(in_features=32, out_features=32, bias=False)
+      (Wv): Linear(in_features=32, out_features=32, bias=False)
+      (proj): Linear(in_features=32, out_features=32, bias=True)
+    )
+  )
+  (readout): Linear(in_features=288, out_features=1, bias=True)
+)
+
+──────────────────────────────────────────────────────────────────────
+PHASE 1: AdamW training
+──────────────────────────────────────────────────────────────────────
+Epoch    0 | Loss: 0.37907457 | Acc: 0.50482283
+Epoch  500 | Loss: 0.00290927 | Acc: 0.99960630
+Epoch 1000 | Loss: 0.00158149 | Acc: 1.00000000
+Epoch 1500 | Loss: 0.00120804 | Acc: 1.00000000
+Epoch 2000 | Loss: 0.00064370 | Acc: 1.00000000
+
+Gradient norms per parameter group:
+  embed.weight                    grad_norm=2.023162e-01  param_norm=3.401369e+00
+  layers.0.Wq.weight              grad_norm=1.651697e-01  param_norm=4.236886e+00
+  layers.0.Wk.weight              grad_norm=1.174721e-01  param_norm=4.378335e+00
+  layers.0.Wv.weight              grad_norm=1.752488e-02  param_norm=4.486007e+00
+  layers.0.proj.weight            grad_norm=1.992907e-02  param_norm=4.106880e+00
+  layers.0.proj.bias              grad_norm=4.806940e-01  param_norm=5.394303e-01
+  layers.1.Wq.weight              grad_norm=1.644147e-01  param_norm=3.654772e+00
+  layers.1.Wk.weight              grad_norm=1.085640e-01  param_norm=3.771288e+00
+  layers.1.Wv.weight              grad_norm=3.408304e-02  param_norm=3.695305e+00
+  layers.1.proj.weight            grad_norm=3.083257e-02  param_norm=3.752135e+00
+  layers.1.proj.bias              grad_norm=1.316821e-01  param_norm=6.072227e-01
+  layers.2.Wq.weight              grad_norm=5.228019e-02  param_norm=3.577449e+00
+  layers.2.Wk.weight              grad_norm=5.808598e-02  param_norm=3.563470e+00
+  layers.2.Wv.weight              grad_norm=4.803145e-02  param_norm=3.433873e+00
+  layers.2.proj.weight            grad_norm=2.261614e-02  param_norm=3.471420e+00
+  layers.2.proj.bias              grad_norm=2.819122e-02  param_norm=6.073599e-01
+  readout.weight                  grad_norm=2.467492e-01  param_norm=5.120837e-01
+  readout.bias                    grad_norm=4.099234e-02  param_norm=3.236587e-02
+
+AdamW final train loss: 1.20171509e-03
+
+Train (post-AdamW) — Prediction statistics:
+  pred  min=-0.134540  max=1.048280  mean=0.515673  std=0.519479
+  error min=2.318556e-06  max=2.682137e-01  mean=3.040953e-02
+  accuracy (threshold=0.5): 1.000000
+  preds < 0.1: 4979  |  0.1 <= preds <= 0.9: 150  |  preds > 0.9: 5031
+
+Train (post-AdamW) — Sample predictions (first 10):
+  Sequence                             Pred  Target      |Err|
+  [1, 8, 7, 4, 3, 9, 2, 6, 5]      1.041458     1.0 4.145813e-02
+  [2, 4, 1, 8, 2, 7, 6, 3, 2]      0.006293     0.0 6.292958e-03
+  [2, 8, 4, 3, 7, 2, 3, 1, 1]     -0.000477     0.0 4.766318e-04
+  [8, 9, 9, 2, 6, 2, 5, 8, 6]      0.021064     0.0 2.106400e-02
+  [9, 8, 5, 1, 7, 2, 4, 3, 6]      1.040633     1.0 4.063280e-02
+  [3, 1, 9, 7, 6, 5, 8, 4, 2]      1.040458     1.0 4.045795e-02
+  [8, 1, 5, 9, 7, 5, 7, 6, 8]     -0.011429     0.0 1.142921e-02
+  [9, 9, 6, 8, 3, 3, 3, 1, 6]     -0.007493     0.0 7.492843e-03
+  [2, 7, 5, 1, 7, 6, 4, 1, 2]      0.010362     0.0 1.036182e-02
+  [2, 7, 2, 8, 1, 3, 9, 8, 5]     -0.021065     0.0 2.106502e-02
+
+──────────────────────────────────────────────────────────────────────
+PHASE 2: Validation evaluation
+──────────────────────────────────────────────────────────────────────
+Validation results | Loss: 530.0882 | Acc: 0.9987
+
+Analyzing misclassified Validation examples (920 total):
+  Input: [8, 8, 8, 3, 8, 8, 4, 7, 6], Predicted: 1.2570, Actual: 0
+  Input: [8, 6, 8, 6, 9, 8, 6, 9, 6], Predicted: 0.6398, Actual: 0
+  Input: [7, 7, 7, 5, 7, 7, 7, 1, 7], Predicted: 128.2182, Actual: 0
+  Input: [8, 8, 6, 5, 8, 9, 8, 1, 8], Predicted: 0.9488, Actual: 0
+  Input: [9, 9, 2, 7, 9, 9, 9, 6, 7], Predicted: 0.5694, Actual: 0
+
+Validation — Prediction statistics:
+  pred  min=-2.514659  max=18640.943009  mean=0.579562  std=23.028085
+  error min=6.917983e-08  max=1.864094e+04  mean=9.102537e-02
+  accuracy (threshold=0.5): 0.998714
+  preds < 0.1: 342630  |  0.1 <= preds <= 0.9: 14594  |  preds > 0.9: 358376
+
+Validation — Sample predictions (first 10):
+  Sequence                             Pred  Target      |Err|
+  [3, 6, 9, 4, 7, 2, 8, 1, 5]      1.043927     1.0 4.392662e-02
+  [5, 9, 8, 7, 6, 3, 2, 4, 1]      1.037945     1.0 3.794454e-02
+  [1, 1, 6, 3, 3, 6, 1, 6, 9]     -0.049445     0.0 4.944470e-02
+  [1, 5, 4, 3, 8, 2, 6, 9, 7]      1.033967     1.0 3.396746e-02
+  [8, 2, 3, 7, 6, 9, 5, 1, 4]      1.042582     1.0 4.258240e-02
+  [2, 9, 5, 9, 2, 9, 4, 7, 2]     -0.018667     0.0 1.866660e-02
+  [3, 3, 2, 4, 4, 1, 2, 8, 6]     -0.005928     0.0 5.927550e-03
+  [9, 7, 3, 1, 2, 4, 8, 5, 6]      1.036323     1.0 3.632292e-02
+  [2, 9, 5, 1, 6, 3, 4, 7, 8]      1.040069     1.0 4.006895e-02
+  [5, 3, 2, 8, 6, 7, 9, 4, 1]      1.037954     1.0 3.795411e-02
+
+======================================================================
+SUMMARY
+======================================================================
+  Parameters:          12961
+  Train samples:       10160
+  Val samples:         715600
+  AdamW final loss:    1.20171509e-03

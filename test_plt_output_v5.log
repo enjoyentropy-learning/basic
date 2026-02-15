@@ -1,0 +1,118 @@
+======================================================================
+Exp 5: More Data + More Epochs + Cosine LR
+  d_model=9, depth=3, dtype=torch.float64
+  train_frac=0.14, seed=42
+  epochs=5000, lr=0.001, cosine→1e-6
+======================================================================
+Train OH: torch.Size([101606, 9, 9]) Train y: torch.Size([101606, 1])
+Val OH:   torch.Size([624154, 9, 9]) Val y: torch.Size([624154, 1])
+
+Dataset sizes: train=101606, val=624154
+Train label distribution: valid=50796, invalid=50810
+
+Model parameter count: 1081
+Model architecture:
+SymbolicLogicEngine(
+  (layers): ModuleList(
+    (0-2): 3 x PLTBlock(
+      (Wq): Linear(in_features=9, out_features=9, bias=False)
+      (Wk): Linear(in_features=9, out_features=9, bias=False)
+      (Wv): Linear(in_features=9, out_features=9, bias=False)
+      (proj): Linear(in_features=9, out_features=9, bias=True)
+    )
+  )
+  (readout): Linear(in_features=81, out_features=1, bias=True)
+)
+
+──────────────────────────────────────────────────────────────────────
+AdamW + Cosine Annealing
+──────────────────────────────────────────────────────────────────────
+Epoch     0 | Loss: 0.70906082 | Acc: 0.50010824 | LR: 9.999999e-04
+Epoch   500 | Loss: 0.00694851 | Acc: 0.99791348 | LR: 9.754557e-04
+Epoch  1000 | Loss: 0.00323318 | Acc: 0.99957681 | LR: 9.044194e-04
+Epoch  1500 | Loss: 0.00202102 | Acc: 0.99997050 | LR: 7.938448e-04
+Epoch  2000 | Loss: 0.00150431 | Acc: 0.99996066 | LR: 6.545555e-04
+Epoch  2500 | Loss: 0.00121451 | Acc: 0.99997050 | LR: 5.001862e-04
+Epoch  3000 | Loss: 0.00105636 | Acc: 0.99999017 | LR: 3.458476e-04
+Epoch  3500 | Loss: 0.00095645 | Acc: 0.99999017 | LR: 2.066474e-04
+Epoch  4000 | Loss: 0.00090073 | Acc: 1.00000000 | LR: 9.621162e-05
+Epoch  4500 | Loss: 0.00087713 | Acc: 1.00000000 | LR: 2.535038e-05
+
+Gradient norms per parameter group:
+  layers.0.Wq.weight              grad_norm=3.022669e-04  param_norm=2.626208e+00
+  layers.0.Wk.weight              grad_norm=2.438334e-04  param_norm=2.729074e+00
+  layers.0.Wv.weight              grad_norm=1.224821e-04  param_norm=3.098921e+00
+  layers.0.proj.weight            grad_norm=1.218934e-04  param_norm=2.956730e+00
+  layers.0.proj.bias              grad_norm=2.889111e-04  param_norm=6.636044e-01
+  layers.1.Wq.weight              grad_norm=1.929176e-04  param_norm=2.581495e+00
+  layers.1.Wk.weight              grad_norm=1.979299e-04  param_norm=2.570977e+00
+  layers.1.Wv.weight              grad_norm=1.329711e-04  param_norm=2.679807e+00
+  layers.1.proj.weight            grad_norm=7.542465e-05  param_norm=2.715089e+00
+  layers.1.proj.bias              grad_norm=1.576234e-04  param_norm=4.980767e-01
+  layers.2.Wq.weight              grad_norm=9.374265e-05  param_norm=2.201376e+00
+  layers.2.Wk.weight              grad_norm=8.095264e-05  param_norm=2.423367e+00
+  layers.2.Wv.weight              grad_norm=5.521013e-05  param_norm=2.394187e+00
+  layers.2.proj.weight            grad_norm=2.289183e-05  param_norm=2.423208e+00
+  layers.2.proj.bias              grad_norm=5.093585e-05  param_norm=4.810474e-01
+  readout.weight                  grad_norm=1.088985e-03  param_norm=1.454216e-01
+  readout.bias                    grad_norm=1.213344e-04  param_norm=3.250569e-03
+
+Final train loss: 8.72645740e-04
+
+Train — Prediction statistics:
+  pred  min=-0.543768  max=1.003762  mean=0.499870  std=0.499282
+  error min=9.313807e-08  max=5.437677e-01  mean=1.325413e-02
+  accuracy (threshold=0.5): 1.000000
+  preds < 0.1: 49186  |  0.1 <= preds <= 0.9: 1624  |  preds > 0.9: 50796
+
+Train — Sample predictions (first 10):
+  Sequence                             Pred  Target      |Err|
+  [1, 8, 7, 4, 3, 9, 2, 6, 5]      0.999172     1.0 8.277149e-04
+  [2, 4, 1, 8, 2, 7, 6, 3, 2]     -0.034859     0.0 3.485892e-02
+  [2, 8, 4, 3, 7, 2, 3, 1, 1]     -0.003760     0.0 3.759696e-03
+  [8, 9, 9, 2, 6, 2, 5, 8, 6]      0.016779     0.0 1.677891e-02
+  [9, 8, 5, 1, 7, 2, 4, 3, 6]      0.998410     1.0 1.589590e-03
+  [3, 1, 9, 7, 6, 5, 8, 4, 2]      0.995275     1.0 4.724981e-03
+  [8, 1, 5, 9, 7, 5, 7, 6, 8]     -0.017655     0.0 1.765484e-02
+  [9, 9, 6, 8, 3, 3, 3, 1, 6]     -0.008150     0.0 8.150355e-03
+  [2, 7, 5, 1, 7, 6, 4, 1, 2]     -0.005417     0.0 5.416953e-03
+  [2, 7, 2, 8, 1, 3, 9, 8, 5]     -0.040654     0.0 4.065432e-02
+
+──────────────────────────────────────────────────────────────────────
+Validation evaluation
+──────────────────────────────────────────────────────────────────────
+Validation results | Loss: 0.0367 | Acc: 1.0000
+
+Analyzing misclassified Validation examples (26 total):
+  Input: [3, 3, 2, 3, 2, 2, 3, 1, 2], Predicted: 1.7942, Actual: 0
+  Input: [3, 3, 3, 2, 3, 9, 3, 2, 2], Predicted: 0.5589, Actual: 0
+  Input: [2, 2, 8, 1, 8, 2, 2, 8, 8], Predicted: 0.5268, Actual: 0
+  Input: [2, 2, 5, 2, 5, 2, 2, 4, 5], Predicted: 0.6003, Actual: 0
+  Input: [9, 9, 8, 7, 8, 9, 9, 9, 8], Predicted: 0.6801, Actual: 0
+
+Validation — Prediction statistics:
+  pred  min=-91.387603  max=19.686184  mean=0.499313  std=0.534568
+  error min=4.038445e-09  max=9.138760e+01  mean=1.406194e-02
+  accuracy (threshold=0.5): 0.999958
+  preds < 0.1: 302034  |  0.1 <= preds <= 0.9: 10026  |  preds > 0.9: 312094
+
+Validation — Sample predictions (first 10):
+  Sequence                             Pred  Target      |Err|
+  [9, 9, 3, 6, 5, 2, 9, 5, 3]      0.002662     0.0 2.662011e-03
+  [5, 7, 4, 1, 2, 6, 8, 9, 3]      0.997264     1.0 2.735771e-03
+  [5, 8, 9, 9, 4, 6, 1, 2, 1]     -0.031133     0.0 3.113264e-02
+  [1, 3, 9, 7, 8, 1, 1, 8, 2]     -0.015373     0.0 1.537342e-02
+  [2, 8, 7, 5, 5, 5, 6, 2, 6]     -0.011312     0.0 1.131184e-02
+  [6, 1, 5, 5, 5, 9, 8, 7, 9]      0.009937     0.0 9.937391e-03
+  [2, 2, 3, 6, 6, 2, 4, 5, 7]      0.003214     0.0 3.214266e-03
+  [4, 7, 5, 5, 3, 4, 1, 5, 5]      0.015936     0.0 1.593606e-02
+  [4, 9, 5, 2, 8, 1, 7, 3, 6]      1.001640     1.0 1.640397e-03
+  [5, 4, 3, 9, 6, 2, 7, 1, 8]      0.997495     1.0 2.504999e-03
+
+======================================================================
+SUMMARY
+======================================================================
+  Parameters:          1081
+  Train samples:       101606
+  Val samples:         624154
+  Final train loss:    8.72645740e-04
