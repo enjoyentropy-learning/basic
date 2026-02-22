@@ -1,0 +1,352 @@
+Custom Optimizer Test: p -= (loss / ||grad||²) * grad
+============================================================
+
+============================================================
+Experiment 1: f(x) = (x-3)², dtype=torch.float32
+============================================================
+  step   0: x=+6.50000000, loss=4.900000e+01, grad=+1.400000e+01, step_scale=0.25
+  step   1: x=+4.75000000, loss=1.225000e+01, grad=+7.000000e+00, step_scale=0.25
+  step   2: x=+3.87500000, loss=3.062500e+00, grad=+3.500000e+00, step_scale=0.25
+  step   3: x=+3.43750000, loss=7.656250e-01, grad=+1.750000e+00, step_scale=0.25
+  step   4: x=+3.21875000, loss=1.914062e-01, grad=+8.750000e-01, step_scale=0.25
+  step   5: x=+3.10937500, loss=4.785156e-02, grad=+4.375000e-01, step_scale=0.25
+  step   6: x=+3.05468750, loss=1.196289e-02, grad=+2.187500e-01, step_scale=0.25
+  step   7: x=+3.02734375, loss=2.990723e-03, grad=+1.093750e-01, step_scale=0.25
+  step   8: x=+3.01367188, loss=7.476807e-04, grad=+5.468750e-02, step_scale=0.25
+  step   9: x=+3.00683594, loss=1.869202e-04, grad=+2.734375e-02, step_scale=0.25
+  step  10: x=+3.00341797, loss=4.673004e-05, grad=+1.367188e-02, step_scale=0.25
+  step  20: x=+3.00000334, loss=4.456524e-11, grad=+1.335144e-05, step_scale=0.25
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  step  30: x=+3.00000000, loss=0.000000e+00, grad=+0.000000e+00, step_scale=None
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  step  40: x=+3.00000000, loss=0.000000e+00, grad=+0.000000e+00, step_scale=None
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+
+============================================================
+Experiment 1: f(x) = (x-3)², dtype=torch.float64
+============================================================
+  step   0: x=+6.50000000, loss=4.900000e+01, grad=+1.400000e+01, step_scale=0.25
+  step   1: x=+4.75000000, loss=1.225000e+01, grad=+7.000000e+00, step_scale=0.25
+  step   2: x=+3.87500000, loss=3.062500e+00, grad=+3.500000e+00, step_scale=0.25
+  step   3: x=+3.43750000, loss=7.656250e-01, grad=+1.750000e+00, step_scale=0.25
+  step   4: x=+3.21875000, loss=1.914062e-01, grad=+8.750000e-01, step_scale=0.25
+  step   5: x=+3.10937500, loss=4.785156e-02, grad=+4.375000e-01, step_scale=0.25
+  step   6: x=+3.05468750, loss=1.196289e-02, grad=+2.187500e-01, step_scale=0.25
+  step   7: x=+3.02734375, loss=2.990723e-03, grad=+1.093750e-01, step_scale=0.25
+  step   8: x=+3.01367188, loss=7.476807e-04, grad=+5.468750e-02, step_scale=0.25
+  step   9: x=+3.00683594, loss=1.869202e-04, grad=+2.734375e-02, step_scale=0.25
+  step  10: x=+3.00341797, loss=4.673004e-05, grad=+1.367188e-02, step_scale=0.25
+  step  20: x=+3.00000334, loss=4.456524e-11, grad=+1.335144e-05, step_scale=0.25
+  step  30: x=+3.00000000, loss=4.250073e-17, grad=+1.303852e-08, step_scale=0.25
+  step  40: x=+3.00000000, loss=4.053185e-23, grad=+1.273293e-11, step_scale=0.25
+  Saved custom_opt_exp1.png
+
+============================================================
+Experiment 2: f(x,y) = (x-1)² + (y-2)², dtype=torch.float32
+============================================================
+  step   0: x=+5.500000, y=+6.000000, loss=1.450000e+02, step_scale=0.25
+  step   1: x=+3.250000, y=+4.000000, loss=3.625000e+01, step_scale=0.25
+  step   2: x=+2.125000, y=+3.000000, loss=9.062500e+00, step_scale=0.25
+  step   3: x=+1.562500, y=+2.500000, loss=2.265625e+00, step_scale=0.25
+  step   4: x=+1.281250, y=+2.250000, loss=5.664062e-01, step_scale=0.25
+  step   5: x=+1.140625, y=+2.125000, loss=1.416016e-01, step_scale=0.25
+  step   6: x=+1.070312, y=+2.062500, loss=3.540039e-02, step_scale=0.25
+  step   7: x=+1.035156, y=+2.031250, loss=8.850098e-03, step_scale=0.25
+  step   8: x=+1.017578, y=+2.015625, loss=2.212524e-03, step_scale=0.25
+  step   9: x=+1.008789, y=+2.007812, loss=5.531311e-04, step_scale=0.25
+  step  10: x=+1.004395, y=+2.003906, loss=1.382828e-04, step_scale=0.25
+  step  20: x=+1.000004, y=+2.000004, loss=1.318767e-10, step_scale=0.25
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  step  30: x=+1.000000, y=+2.000000, loss=0.000000e+00, step_scale=None
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  step  40: x=+1.000000, y=+2.000000, loss=0.000000e+00, step_scale=None
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+  Gradient vanished | grad_norm_sq=0.000e+00
+
+============================================================
+Experiment 2: f(x,y) = (x-1)² + (y-2)², dtype=torch.float64
+============================================================
+  step   0: x=+5.500000, y=+6.000000, loss=1.450000e+02, step_scale=0.25
+  step   1: x=+3.250000, y=+4.000000, loss=3.625000e+01, step_scale=0.25
+  step   2: x=+2.125000, y=+3.000000, loss=9.062500e+00, step_scale=0.25
+  step   3: x=+1.562500, y=+2.500000, loss=2.265625e+00, step_scale=0.25
+  step   4: x=+1.281250, y=+2.250000, loss=5.664062e-01, step_scale=0.25
+  step   5: x=+1.140625, y=+2.125000, loss=1.416016e-01, step_scale=0.25
+  step   6: x=+1.070312, y=+2.062500, loss=3.540039e-02, step_scale=0.25
+  step   7: x=+1.035156, y=+2.031250, loss=8.850098e-03, step_scale=0.25
+  step   8: x=+1.017578, y=+2.015625, loss=2.212524e-03, step_scale=0.25
+  step   9: x=+1.008789, y=+2.007812, loss=5.531311e-04, step_scale=0.25
+  step  10: x=+1.004395, y=+2.003906, loss=1.382828e-04, step_scale=0.25
+  step  20: x=+1.000004, y=+2.000004, loss=1.318767e-10, step_scale=0.25
+  step  30: x=+1.000000, y=+2.000000, loss=1.257675e-16, step_scale=0.25
+  step  40: x=+1.000000, y=+2.000000, loss=1.199412e-22, step_scale=0.25
+  Saved custom_opt_exp2.png
+
+============================================================
+Experiment 3: f(x,y) = (x-1)² + 100*(y-2)², dtype=torch.float32
+============================================================
+  step   0: x=+9.95443630, y=+5.94988728, loss=6.481000e+03, |gx/gy|=0.0112, step_scale=0.002531320322304964
+  step   1: x=+9.90738773, y=+3.87451172, loss=1.640343e+03, |gx/gy|=0.0227, step_scale=0.0026271326933056116
+  step   2: x=+9.85291767, y=+2.72821140, loss=4.307210e+02, |gx/gy|=0.0475, step_scale=0.0030575967393815517
+  step   3: x=+9.74483013, y=+1.83911824, loss=1.314033e+02, |gx/gy|=0.1216, step_scale=0.006104636937379837
+  step   4: x=+8.71386337, y=+3.73582458, loss=7.906035e+01, |gx/gy|=0.5436, step_scale=0.058947209268808365
+  step   5: x=+8.66776848, y=+2.69856167, loss=3.608124e+02, |gx/gy|=0.0444, step_scale=0.0029878101777285337
+  step   6: x=+8.58424377, y=+1.93762231, loss=1.075935e+02, |gx/gy|=0.1098, step_scale=0.005446472205221653
+  step   7: x=+6.30694389, y=+3.81062007, loss=5.790985e+01, |gx/gy|=1.2159, step_scale=0.1501336246728897
+  step   8: x=+6.27815437, y=+2.82838035, loss=3.559982e+02, |gx/gy|=0.0293, step_scale=0.00271243997849524
+  step   9: x=+6.24119949, y=+2.24839187, loss=9.648032e+01, |gx/gy|=0.0637, step_scale=0.003500737715512514
+  step  10: x=+6.10440636, y=+1.60009956, loss=3.364003e+01, |gx/gy|=0.2110, step_scale=0.013049788773059845
+  step  11: x=+6.03837824, y=+2.11739016, loss=4.204700e+01, |gx/gy|=0.1276, step_scale=0.0064677405171096325
+  step  12: x=+5.62522840, y=+1.15478432, loss=2.676330e+01, |gx/gy|=0.4292, step_scale=0.041000280529260635
+  step  13: x=+5.59526682, y=+1.70230460, loss=9.283170e+01, |gx/gy|=0.0547, step_scale=0.0032389380503445864
+  step  14: x=+5.51935244, y=+2.19409990, loss=2.997873e+01, |gx/gy|=0.1544, step_scale=0.00826004333794117
+  step  20: x=+3.97554612, y=+2.24555898, loss=1.132615e+01, |gx/gy|=0.2183, step_scale=0.013760928064584732
+  step  30: x=+2.41612482, y=+1.75482309, loss=2.486063e+00, |gx/gy|=0.4058, step_scale=0.0374944843351841
+  step  40: x=+1.94234490, y=+1.75394905, loss=1.275049e+00, |gx/gy|=0.6626, step_scale=0.07800494134426117
+  step  50: x=+1.54997170, y=+2.14680815, loss=4.409254e-01, |gx/gy|=0.6846, step_scale=0.08148405700922012
+  step  60: x=+1.32350779, y=+1.99869382, loss=2.201447e-01, |gx/gy|=0.0970, step_scale=0.00480610691010952
+  step  70: x=+1.13164365, y=+1.99724865, loss=4.386446e-02, |gx/gy|=0.0819, step_scale=0.004150801338255405
+  step  80: x=+1.09675479, y=+1.99290812, loss=1.223982e-02, |gx/gy|=0.2023, step_scale=0.012233862653374672
+  step  90: x=+1.05477381, y=+2.00765729, loss=3.217791e-02, |gx/gy|=0.0323, step_scale=0.002757346024736762
+
+  *** ZIG-ZAG DETECTED: loss increased at 37 steps ***
+      step 5: 7.906035e+01 -> 3.608124e+02 (increase: 2.817521e+02)
+      step 8: 5.790985e+01 -> 3.559982e+02 (increase: 2.980883e+02)
+      step 11: 3.364003e+01 -> 4.204700e+01 (increase: 8.406975e+00)
+      step 13: 2.676330e+01 -> 9.283170e+01 (increase: 6.606840e+01)
+      step 16: 2.419202e+01 -> 3.496331e+01 (increase: 1.077129e+01)
+
+============================================================
+Experiment 3: f(x,y) = (x-1)² + 100*(y-2)², dtype=torch.float64
+============================================================
+  step   0: x=+9.95443624, y=+5.94988759, loss=6.481000e+03, |gx/gy|=0.0112, step_scale=0.0025313202547802543
+  step   1: x=+9.90738724, y=+3.87451140, loss=1.640343e+03, |gx/gy|=0.0227, step_scale=0.002627133231329236
+  step   2: x=+9.85291685, y=+2.72821144, loss=4.307208e+02, |gx/gy|=0.0475, step_scale=0.0030575966611122163
+  step   3: x=+9.74482919, y=+1.83911840, loss=1.314033e+02, |gx/gy|=0.1216, step_scale=0.006104635212177396
+  step   4: x=+8.71386120, y=+3.73582531, loss=7.906033e+01, |gx/gy|=0.5436, step_scale=0.05894729146566619
+  step   5: x=+8.66776611, y=+2.69856234, loss=3.608126e+02, |gx/gy|=0.0444, step_scale=0.0029878092074362267
+  step   6: x=+8.58424167, y=+1.93762324, loss=1.075936e+02, |gx/gy|=0.1098, step_scale=0.0054464652139803145
+  step   7: x=+6.30691577, y=+3.81061478, loss=5.790981e+01, |gx/gy|=1.2159, step_scale=0.150135372899047
+  step   8: x=+6.27812639, y=+2.82837830, loss=3.559959e+02, |gx/gy|=0.0293, step_scale=0.0027124391408983504
+  step   9: x=+6.24117178, y=+2.24839222, loss=9.647968e+01, |gx/gy|=0.0637, step_scale=0.003500731977252123
+  step  10: x=+6.10438084, y=+1.60010578, loss=3.363975e+01, |gx/gy|=0.2110, step_scale=0.013049652677452912
+  step  11: x=+6.03835238, y=+2.11739475, loss=4.204624e+01, |gx/gy|=0.1276, step_scale=0.006467822536287101
+  step  12: x=+5.62523367, y=+1.15481881, loss=2.676315e+01, |gx/gy|=0.4292, step_scale=0.040997401555604954
+  step  13: x=+5.59527141, y=+1.70232713, loss=9.282591e+01, |gx/gy|=0.0547, step_scale=0.003238999656533709
+  step  14: x=+5.51934921, y=+2.19413659, loss=2.997743e+01, |gx/gy|=0.1544, step_scale=0.008260904965124048
+  step  20: x=+3.97836054, y=+2.24650899, loss=1.134189e+01, |gx/gy|=0.2188, step_scale=0.013802891606537625
+  step  30: x=+2.26062370, y=+2.21643172, loss=1.967662e+00, |gx/gy|=0.4024, step_scale=0.03698419079141256
+  step  40: x=+1.71912774, y=+2.11458802, loss=6.766383e+00, |gx/gy|=0.0289, step_scale=0.002707064035496535
+  step  50: x=+1.29174468, y=+1.99421254, loss=2.127920e-01, |gx/gy|=0.0828, step_scale=0.004185539318949978
+  step  60: x=+1.11834247, y=+1.98410667, loss=1.706880e-02, |gx/gy|=0.3186, step_scale=0.025313834964416315
+  step  70: x=+1.09043827, y=+1.99712198, loss=1.279060e-02, |gx/gy|=0.1388, step_scale=0.00717642977189365
+  step  80: x=+1.03323857, y=+1.99119479, loss=1.601923e-03, |gx/gy|=0.6768, step_scale=0.08025981037328375
+  step  90: x=+1.01274397, y=+2.00160811, loss=1.503772e-03, |gx/gy|=0.0350, step_scale=0.002803098762326508
+
+  *** ZIG-ZAG DETECTED: loss increased at 37 steps ***
+      step 5: 7.906033e+01 -> 3.608126e+02 (increase: 2.817523e+02)
+      step 8: 5.790981e+01 -> 3.559959e+02 (increase: 2.980861e+02)
+      step 11: 3.363975e+01 -> 4.204624e+01 (increase: 8.406491e+00)
+      step 13: 2.676315e+01 -> 9.282591e+01 (increase: 6.606276e+01)
+      step 16: 2.419342e+01 -> 3.495549e+01 (increase: 1.076207e+01)
+  Saved custom_opt_exp3.png
+
+============================================================
+Experiment 4: y = w*x + b, fitting (1,2) & (2,5), dtype=torch.float32
+============================================================
+  step   0: w=+0.90155435, b=+0.52590674, loss=1.450000e+01, step_scale=0.07512953132390976
+  step   1: w=+1.38652158, b=+0.79186338, loss=3.730979e+00, step_scale=0.08199621737003326
+  step   2: w=+1.70546389, b=+0.94076645, loss=1.045657e+00, step_scale=0.11848655343055725
+  step   3: w=+2.34962845, b=+0.94282228, loss=4.189570e-01, step_scale=0.9904409050941467
+  step   4: w=+2.09116960, b=+0.74877018, loss=1.041347e+00, step_scale=0.10030969232320786
+  step   5: w=+1.86188936, b=+0.49699470, loss=3.551224e-01, step_scale=0.3265361785888672
+  step   6: w=+2.13511419, b=+0.59273577, loss=3.679961e-01, step_scale=0.22776900231838226
+  step   7: w=+1.91085458, b=+0.30075222, loss=2.742722e-01, step_scale=0.49420541524887085
+  step   8: w=+2.13339591, b=+0.39676785, loss=4.074258e-01, step_scale=0.14418235421180725
+  step   9: w=+2.61933064, b=-0.26284134, loss=1.971328e-01, step_scale=3.4048972129821777
+  step  10: w=+2.52355719, b=-0.36613056, loss=6.383460e-02, step_scale=0.31082257628440857
+  step  11: w=+2.64184666, b=-0.32635921, loss=6.327716e-02, step_scale=0.24612590670585632
+  step  12: w=+2.55029917, b=-0.43487772, loss=5.067634e-02, step_scale=0.3977638781070709
+  step  13: w=+2.64804697, b=-0.39620218, loss=6.253247e-02, step_scale=0.17671529948711395
+  step  14: w=+2.57424283, b=-0.61311299, loss=3.672374e-02, step_scale=1.4295207262039185
+  step  20: w=+2.77763700, b=-0.64709789, loss=2.454699e-02, step_scale=0.1551157832145691
+  step  30: w=+2.90585756, b=-0.91965169, loss=1.940157e-03, step_scale=1.855125904083252
+  step  40: w=+2.98098111, b=-0.97789013, loss=8.075272e-05, step_scale=0.5531265735626221
+  step  50: w=+2.99704552, b=-0.99749863, loss=1.951112e-06, step_scale=1.9341254234313965
+  step  60: w=+2.99964213, b=-0.99943787, loss=7.246683e-08, step_scale=0.13384370505809784
+  step  70: w=+2.99991083, b=-0.99987912, loss=2.328875e-09, step_scale=0.28506818413734436
+  step  80: w=+2.99996924, b=-0.99991649, loss=7.594565e-10, step_scale=0.7989773750305176
+  step  90: w=+2.99999571, b=-0.99998224, loss=5.206857e-11, step_scale=2.3608248233795166
+
+  *** ZIG-ZAG DETECTED: loss increased at 32 steps ***
+      step 4: 4.189570e-01 -> 1.041347e+00
+      step 6: 3.551224e-01 -> 3.679961e-01
+      step 8: 2.742722e-01 -> 4.074258e-01
+      step 13: 5.067634e-02 -> 6.253247e-02
+      step 15: 3.672374e-02 -> 1.086947e-01
+
+============================================================
+Experiment 4: y = w*x + b, fitting (1,2) & (2,5), dtype=torch.float64
+============================================================
+  step   0: w=+0.90155440, b=+0.52590674, loss=1.450000e+01, step_scale=0.07512953367875648
+  step   1: w=+1.38652169, b=+0.79186339, loss=3.730979e+00, step_scale=0.08199622012707843
+  step   2: w=+1.70546396, b=+0.94076641, loss=1.045657e+00, step_scale=0.11848655632669626
+  step   3: w=+2.34962905, b=+0.94282186, loss=4.189570e-01, step_scale=0.9904427461998327
+  step   4: w=+2.09117009, b=+0.74876972, loss=1.041348e+00, step_scale=0.10030966214458485
+  step   5: w=+1.86189001, b=+0.49699458, loss=3.551224e-01, step_scale=0.32653555670377105
+  step   6: w=+2.13511492, b=+0.59273550, loss=3.679952e-01, step_scale=0.2277697552659283
+  step   7: w=+1.91085549, b=+0.30075330, loss=2.742724e-01, step_scale=0.4942017883538968
+  step   8: w=+2.13339688, b=+0.39676878, loss=4.074236e-01, step_scale=0.14418320395724618
+  step   9: w=+2.61930997, b=-0.26285950, loss=1.971329e-01, step_scale=3.4049161937587895
+  step  10: w=+2.52352817, b=-0.36618001, loss=6.382225e-02, step_scale=0.3110087911820273
+  step  11: w=+2.64177350, b=-0.32640203, loss=6.329918e-02, step_scale=0.24588382049187546
+  step  12: w=+2.55019096, b=-0.43507396, loss=5.064786e-02, step_scale=0.39877202911664605
+  step  13: w=+2.64786751, b=-0.39637901, loss=6.263534e-02, step_scale=0.17622651297090788
+  step  14: w=+2.57499669, b=-0.61534412, loss=3.668784e-02, step_scale=1.4515948050504246
+  step  20: w=+2.77194805, b=-0.65398425, loss=2.161408e-02, step_scale=0.1814867106016893
+  step  30: w=+2.94573845, b=-0.91430901, loss=1.431873e-03, step_scale=0.15766600826532487
+  step  40: w=+2.99073888, b=-0.98677522, loss=6.039936e-05, step_scale=0.10679243338728822
+  step  50: w=+2.99934602, b=-0.99729312, loss=1.024430e-06, step_scale=1.974539837081242
+  step  60: w=+2.99951763, b=-0.99915910, loss=1.778520e-07, step_scale=0.119662360534224
+  step  70: w=+2.99966476, b=-0.99953096, loss=3.590074e-08, step_scale=0.2506524061365366
+  step  80: w=+2.99988457, b=-0.99969690, loss=1.006874e-08, step_scale=0.7231117774729222
+  step  90: w=+2.99990128, b=-0.99991784, loss=2.672257e-09, step_scale=2.474435336139386
+
+  *** ZIG-ZAG DETECTED: loss increased at 32 steps ***
+      step 4: 4.189570e-01 -> 1.041348e+00
+      step 6: 3.551224e-01 -> 3.679952e-01
+      step 8: 2.742724e-01 -> 4.074236e-01
+      step 13: 5.064786e-02 -> 6.263534e-02
+      step 15: 3.668784e-02 -> 1.090896e-01
+  Saved custom_opt_exp4.png
+
+============================================================
+Experiment 5: Tiny MLP with x² activation, dtype=torch.float32
+============================================================
+  Parameters: 13
+  step   0: loss=2.698743e+00, ||params||=1.8724, step_scale=0.013310624286532402
+  step   1: loss=7.263945e-01, ||params||=1.9021, step_scale=0.016165127977728844
+  step   2: loss=2.511282e-01, ||params||=1.9455, step_scale=0.06379330158233643
+  step   3: loss=3.857196e-01, ||params||=2.0033, step_scale=0.015429900959134102
+  step   4: loss=1.829121e-01, ||params||=1.9549, step_scale=0.35632452368736267
+  step   5: loss=3.623340e-01, ||params||=1.8732, step_scale=0.013232868164777756
+  step   6: loss=1.065423e-01, ||params||=1.9077, step_scale=0.024465903639793396
+  step   7: loss=6.559400e-02, ||params||=1.9361, step_scale=0.13191933929920197
+  step   8: loss=1.722451e-01, ||params||=1.8892, step_scale=0.013831946067512035
+  step   9: loss=5.717149e-02, ||params||=1.9157, step_scale=0.04270622134208679
+  step  10: loss=6.247462e-02, ||params||=1.9441, step_scale=0.025041023269295692
+  step  11: loss=4.362202e-02, ||params||=1.9204, step_scale=0.08684409409761429
+  step  12: loss=9.127545e-02, ||params||=1.9551, step_scale=0.012895802035927773
+  step  13: loss=3.559357e-02, ||params||=1.9337, step_scale=0.0849943682551384
+  step  14: loss=7.078787e-02, ||params||=1.9044, step_scale=0.015381517820060253
+  step  20: loss=1.751733e-02, ||params||=1.9257, step_scale=0.11037687212228775
+  step  40: loss=2.770544e-03, ||params||=1.9377, step_scale=0.014951780438423157
+  step  60: loss=1.352740e-05, ||params||=1.9495, step_scale=0.012091496028006077
+  step  80: loss=2.278302e-07, ||params||=1.9495, step_scale=0.009952559135854244
+  step 100: loss=7.750656e-10, ||params||=1.9496, step_scale=0.05764966085553169
+  step 120: loss=2.510048e-12, ||params||=1.9496, step_scale=0.05491020157933235
+  step 140: loss=1.069284e-13, ||params||=1.9496, step_scale=0.012187432497739792
+  step 160: loss=2.388367e-14, ||params||=1.9496, step_scale=0.02217436581850052
+  step 180: loss=2.388367e-14, ||params||=1.9496, step_scale=0.02217436581850052
+
+  *** ZIG-ZAG DETECTED: loss increased at 54 steps ***
+      step 3: 2.511282e-01 -> 3.857196e-01
+      step 5: 1.829121e-01 -> 3.623340e-01
+      step 8: 6.559400e-02 -> 1.722451e-01
+      step 10: 5.717149e-02 -> 6.247462e-02
+      step 12: 4.362202e-02 -> 9.127545e-02
+      step 14: 3.559357e-02 -> 7.078787e-02
+      step 16: 2.794870e-02 -> 8.048433e-02
+      step 19: 2.310920e-02 -> 2.667033e-02
+      step 21: 1.751733e-02 -> 4.515146e-02
+      step 23: 1.584613e-02 -> 1.793217e-02
+
+============================================================
+Experiment 5: Tiny MLP with x² activation, dtype=torch.float64
+============================================================
+  Parameters: 13
+  step   0: loss=1.200640e+01, ||params||=2.2451, step_scale=0.020175908983505703
+  step   1: loss=4.827382e+00, ||params||=1.9984, step_scale=0.07459167977087677
+  step   2: loss=2.321109e+00, ||params||=1.9451, step_scale=0.26990659157272134
+  step   3: loss=5.100158e-01, ||params||=2.3549, step_scale=0.04248171707586393
+  step   4: loss=2.543729e-01, ||params||=2.2867, step_scale=0.11828248700909891
+  step   5: loss=1.531325e-01, ||params||=2.3622, step_scale=0.04830691810722961
+  step   6: loss=1.122638e-01, ||params||=2.3204, step_scale=0.09727578229820824
+  step   7: loss=1.314497e-01, ||params||=2.3758, step_scale=0.02892198762892834
+  step   8: loss=6.571307e-02, ||params||=2.3438, step_scale=0.3269831396511797
+  step   9: loss=1.678149e-02, ||params||=2.3733, step_scale=0.13154466610671112
+  step  10: loss=2.044727e-02, ||params||=2.3587, step_scale=0.027332555135221693
+  step  11: loss=8.450726e-03, ||params||=2.3720, step_scale=0.19961379274800506
+  step  12: loss=8.856796e-03, ||params||=2.3934, step_scale=0.02159318567442176
+  step  13: loss=3.321749e-03, ||params||=2.3866, step_scale=0.09918747649311604
+  step  14: loss=3.736409e-03, ||params||=2.3810, step_scale=0.029161035834270543
+  step  20: loss=9.243500e-05, ||params||=2.3962, step_scale=0.18947104326364025
+  step  40: loss=1.904518e-08, ||params||=2.3987, step_scale=0.11162895367621033
+  step  60: loss=5.865754e-12, ||params||=2.3987, step_scale=0.11167730851851398
+  step  80: loss=1.690697e-15, ||params||=2.3987, step_scale=0.11220729888001163
+  step 100: loss=4.092222e-19, ||params||=2.3987, step_scale=0.11319263246746027
+  step 120: loss=7.648258e-23, ||params||=2.3987, step_scale=0.13448931016738327
+  step 140: loss=2.267906e-26, ||params||=2.3987, step_scale=0.12111256858923905
+  step 160: loss=2.711709e-30, ||params||=2.3987, step_scale=0.23746746242947675
+  step 180: loss=8.936315e-32, ||params||=2.3987, step_scale=0.0399008821160685
+
+  *** ZIG-ZAG DETECTED: loss increased at 78 steps ***
+      step 7: 1.122638e-01 -> 1.314497e-01
+      step 10: 1.678149e-02 -> 2.044727e-02
+      step 12: 8.450726e-03 -> 8.856796e-03
+      step 14: 3.321749e-03 -> 3.736409e-03
+      step 17: 4.440381e-04 -> 4.896945e-04
+      step 19: 1.866938e-04 -> 2.188575e-04
+      step 23: 3.263689e-05 -> 3.851273e-05
+      step 25: 1.592649e-05 -> 1.649349e-05
+      step 27: 6.265630e-06 -> 7.292568e-06
+      step 31: 1.002008e-06 -> 1.171001e-06
+  Saved custom_opt_exp5.png
+
+============================================================
+All experiments complete. Plots saved:
+  custom_opt_exp1.png — Scalar quadratic
+  custom_opt_exp2.png — Symmetric 2-param
+  custom_opt_exp3.png — Asymmetric 2-param (KEY)
+  custom_opt_exp4.png — Linear network
+  custom_opt_exp5.png — Nonlinear MLP
